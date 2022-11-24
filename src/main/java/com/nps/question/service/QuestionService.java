@@ -51,13 +51,17 @@ public class QuestionService {
         try {
             Optional<Question> question = repository.findById(form.getId());
             if (question.isPresent()) {
-                return QuestionResponseMapper.fromEntityToResponse(repository.save(QuestionMapper.fromFormToEntity(form)));
+                Question updating = question.get();
+                updating.setEnquiry(form.getEnquiry());
+                repository.save(updating);
+                return QuestionResponseMapper.fromEntityToResponse(updating);
             }
             throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
         } catch (ResourceNotFoundException exception) {
             log.error(QUESTION_ID_DOES_NOT_EXIST);
             throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error when updating question with id " + form.getId() + ".");
             throw new RequestException("Error when updating question with id " + form.getId() + ".");
         }
