@@ -61,7 +61,6 @@ public class QuestionService {
             log.error(QUESTION_DOES_NOT_EXIST);
             throw new ResourceNotFoundException(QUESTION_DOES_NOT_EXIST);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Error when updating question.");
             throw new RequestException("Error when updating question.");
         }
