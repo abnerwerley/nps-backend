@@ -1,0 +1,26 @@
+package com.nps.answer.entity;
+
+import lombok.*;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
+@Entity(name = "ANSWER")
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "ANSWER")
+public class Answer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    private String response;
+
+    private int points;
+}

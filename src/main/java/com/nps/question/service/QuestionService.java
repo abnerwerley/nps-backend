@@ -25,7 +25,7 @@ public class QuestionService {
     @Autowired
     private QuestionRepository repository;
 
-    public static final String QUESTION_ID_DOES_NOT_EXIST = "Question id does not exist.";
+    public static final String QUESTION_DOES_NOT_EXIST = "Question does not exist.";
 
     public QuestionResponse registerQuestion(QuestionForm form) {
         try {
@@ -51,15 +51,18 @@ public class QuestionService {
         try {
             Optional<Question> question = repository.findById(form.getId());
             if (question.isPresent()) {
-                return QuestionResponseMapper.fromEntityToResponse(repository.save(QuestionMapper.fromFormToEntity(form)));
+                Question updating = question.get();
+                updating.setEnquiry(form.getEnquiry());
+                repository.save(updating);
+                return QuestionResponseMapper.fromEntityToResponse(updating);
             }
-            throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
+            throw new ResourceNotFoundException(QUESTION_DOES_NOT_EXIST);
         } catch (ResourceNotFoundException exception) {
-            log.error(QUESTION_ID_DOES_NOT_EXIST);
-            throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
+            log.error(QUESTION_DOES_NOT_EXIST);
+            throw new ResourceNotFoundException(QUESTION_DOES_NOT_EXIST);
         } catch (Exception e) {
-            log.error("Error when updating question with id " + form.getId() + ".");
-            throw new RequestException("Error when updating question with id " + form.getId() + ".");
+            log.error("Error when updating question.");
+            throw new RequestException("Error when updating question.");
         }
     }
 
@@ -70,13 +73,13 @@ public class QuestionService {
                 repository.deleteById(id);
                 return "Question deleted.";
             }
-            throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
+            throw new ResourceNotFoundException(QUESTION_DOES_NOT_EXIST);
         } catch (ResourceNotFoundException exception) {
-            log.error(QUESTION_ID_DOES_NOT_EXIST);
-            throw new ResourceNotFoundException(QUESTION_ID_DOES_NOT_EXIST);
+            log.error(QUESTION_DOES_NOT_EXIST);
+            throw new ResourceNotFoundException(QUESTION_DOES_NOT_EXIST);
         } catch (Exception e) {
-            log.error("Error when deleting question with id " + id + ".");
-            throw new RequestException("Error when deleting question with id " + id + ".");
+            log.error("Error when deleting question by id.");
+            throw new RequestException("Error when deleting question by id.");
         }
     }
 }
