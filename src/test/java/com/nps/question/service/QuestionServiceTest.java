@@ -47,7 +47,7 @@ class QuestionServiceTest {
     @Test
     void testRegisterQuestionException() {
         doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionForm()));
-        Exception exception = assertThrows(Exception.class, () -> service.registerQuestion(getQuestionForm()));
+        Exception exception = assertThrows(RequestException.class, () -> service.registerQuestion(getQuestionForm()));
         assertEquals("Error when registering a question.", exception.getMessage());
     }
 
@@ -62,7 +62,7 @@ class QuestionServiceTest {
     @Test
     void testGetAllQuestionsException() {
         doThrow(RequestException.class).when(repository).findAll();
-        Exception exception = assertThrows(Exception.class, () -> service.getAllQuestions());
+        Exception exception = assertThrows(RequestException.class, () -> service.getAllQuestions());
         assertEquals("Error when getting all questions.", exception.getMessage());
     }
 
@@ -79,7 +79,7 @@ class QuestionServiceTest {
     @Test
     void testUpdateQuestionResourceNotFoundException() {
         doThrow(ResourceNotFoundException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.updateQuestion(getQuestionUpdateForm()));
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.updateQuestion(getQuestionUpdateForm()));
         assertEquals("Question does not exist.", exception.getMessage());
     }
 
@@ -87,7 +87,7 @@ class QuestionServiceTest {
     void testUpdateQuestionException() {
         doReturn(getQuestionOptional()).when(repository).findById(ID);
         doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionUpdateFormWithMistake()));
-        Exception exception = assertThrows(Exception.class, () -> service.updateQuestion(getQuestionUpdateFormWithMistake()));
+        Exception exception = assertThrows(RequestException.class, () -> service.updateQuestion(getQuestionUpdateFormWithMistake()));
         assertEquals("Error when updating question.", exception.getMessage());
     }
 
@@ -101,7 +101,7 @@ class QuestionServiceTest {
     @Test
     void testDeleteQuestionResourceNotFoundException() {
         doThrow(ResourceNotFoundException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.deleteQuestion(ID));
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.deleteQuestion(ID));
         assertEquals("Question does not exist.", exception.getMessage());
     }
 
@@ -109,7 +109,7 @@ class QuestionServiceTest {
     void testDeleteQuestionException() {
         doReturn(getQuestionOptional()).when(repository).findById(ID);
         doThrow(RequestException.class).when(repository).deleteById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.deleteQuestion(ID));
+        Exception exception = assertThrows(RequestException.class, () -> service.deleteQuestion(ID));
         assertEquals("Error when deleting question by id.", exception.getMessage());
     }
 

@@ -30,7 +30,7 @@ public class AnswerService {
             Answer answer = AnswerMapper.fromFormToEntity(form);
             return AnswerResponseMapper.fromEntityToResponse(repository.save(answer));
         } catch (ConstraintViolationException e) {
-            log.error("Every answer must have a point.");
+            log.error("Every answer must have a score.");
             throw new RequestException("Every answer must have a score.");
         } catch (Exception e) {
             log.error("Error when registering answer.");
