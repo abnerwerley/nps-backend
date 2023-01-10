@@ -46,14 +46,14 @@ class AnswerServiceTest {
     @Test
     void testRegisterAnswerWithNoPoints() {
         doThrow(ConstraintViolationException.class).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerFormWithNoPoints()));
-        Exception e = assertThrows(Exception.class, () -> service.registerAnswer(getAnswerFormWithNoPoints()));
+        Exception e = assertThrows(RequestException.class, () -> service.registerAnswer(getAnswerFormWithNoPoints()));
         assertEquals("Every answer must have a score.", e.getMessage());
     }
 
     @Test
     void testRegisterAnswerException() {
         doThrow(RequestException.class).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
-        Exception e = assertThrows(Exception.class, () -> service.registerAnswer(getAnswerForm()));
+        Exception e = assertThrows(RequestException.class, () -> service.registerAnswer(getAnswerForm()));
         assertEquals("Error when registering answer.", e.getMessage());
     }
 
@@ -81,7 +81,7 @@ class AnswerServiceTest {
     @Test
     void testGetAnswerByIdWithNonexistentId() {
         doThrow(ResourceNotFoundException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.getAnswerById(ID));
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.getAnswerById(ID));
         assertNotNull(exception);
         assertEquals("Answer does not exist.", exception.getMessage());
     }
@@ -89,7 +89,7 @@ class AnswerServiceTest {
     @Test
     void testGetAnswerByIdException() {
         doThrow(RequestException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.getAnswerById(ID));
+        Exception exception = assertThrows(RequestException.class, () -> service.getAnswerById(ID));
         assertNotNull(exception);
         assertEquals("Error when getting answer by id.", exception.getMessage());
     }
@@ -105,7 +105,7 @@ class AnswerServiceTest {
     @Test
     void testDeleteAnswerWithNonexistentId() {
         doThrow(ResourceNotFoundException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.deleteAnswerById(ID));
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.deleteAnswerById(ID));
         assertNotNull(exception);
         assertEquals("Answer does not exist.", exception.getMessage());
     }
@@ -113,7 +113,7 @@ class AnswerServiceTest {
     @Test
     void testDeleteAnswerException() {
         doThrow(RequestException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(Exception.class, () -> service.deleteAnswerById(ID));
+        Exception exception = assertThrows(RequestException.class, () -> service.deleteAnswerById(ID));
         assertNotNull(exception);
         assertEquals("Error when deleting answer by id.", exception.getMessage());
     }
