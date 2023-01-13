@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/answer")
 @AllArgsConstructor
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class AnswerController {
 
     @Autowired
