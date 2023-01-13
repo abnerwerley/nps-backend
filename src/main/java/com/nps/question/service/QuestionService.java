@@ -47,6 +47,22 @@ public class QuestionService {
         }
     }
 
+    public Optional<QuestionResponse> getQuestionById(Long id) {
+        try {
+            Optional<QuestionResponse> optionalQuestion = repository.findById(id).map(QuestionResponseMapper::fromEntityToResponse);
+            if (optionalQuestion.isPresent()) {
+                return optionalQuestion;
+            }
+            throw new ResourceNotFoundException("Question not found with id: " + id);
+        } catch (ResourceNotFoundException e) {
+            log.error("Question not found with id: " + id);
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            log.error("Could not get question by id.");
+            throw new RequestException("Could not get question by id.");
+        }
+    }
+
     public QuestionResponse updateQuestion(QuestionUpdateForm form) {
         try {
             Optional<Question> question = repository.findById(form.getId());

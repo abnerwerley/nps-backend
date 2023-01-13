@@ -66,6 +66,18 @@ class QuestionServiceTest {
         assertEquals("Error when getting all questions.", exception.getMessage());
     }
 
+    @Test
+    void testGetQuestionById() {
+        doReturn(getQuestionOptional()).when(repository).findById(ID);
+        Optional<QuestionResponse> response = service.getQuestionById(ID);
+        assertNotNull(response);
+        verify(repository).findById(ID);
+
+        Exception ResourceNotFoundException = assertThrows(ResourceNotFoundException.class, () -> service.getQuestionById(99L));
+        assertNotNull(ResourceNotFoundException);
+        assertEquals("Question not found with id: 99", ResourceNotFoundException.getMessage());
+    }
+
 //    @Test
 //    void testUpdateQuestion() {
 //        doReturn(getQuestionOptional()).when(repository).findById(ID);
