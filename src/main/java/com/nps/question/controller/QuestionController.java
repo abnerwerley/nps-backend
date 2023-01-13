@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/question")
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class QuestionController {
 
     @Autowired
@@ -27,6 +29,12 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.OK)
     Stream<QuestionResponse> getAllQuestions() {
         return service.getAllQuestions();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    Optional<QuestionResponse> getQuestionById(@PathVariable Long id) {
+        return service.getQuestionById(id);
     }
 
     @PutMapping("")
