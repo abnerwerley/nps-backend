@@ -11,11 +11,13 @@ public class AnswerResponseMapper {
 
     public static AnswerResponse fromEntityToResponse(Answer answer) {
         return AnswerResponse.builder()
-                .id(answer.getId())
+                .answerId(answer.getAnswerId())
                 .response(answer.getResponse())
-                .points(answer.getPoints())
+                .score(answer.getScore())
+                .questionId(answer.getQuestionId())
                 .build();
     }
 
-    private AnswerResponseMapper(){}
+    private AnswerResponseMapper() {
+    }
 }

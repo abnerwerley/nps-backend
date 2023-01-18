@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class QuestionResponse {
-    private Long id;
+    private Long questionId;
     private String enquiry;
 }

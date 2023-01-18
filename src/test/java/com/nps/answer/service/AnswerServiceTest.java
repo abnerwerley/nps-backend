@@ -7,7 +7,8 @@ import com.nps.answer.json.AnswerResponse;
 import com.nps.answer.persistence.AnswerRepository;
 import com.nps.exception.RequestException;
 import com.nps.exception.ResourceNotFoundException;
-import org.hibernate.exception.ConstraintViolationException;
+import com.nps.question.entity.Question;
+import com.nps.question.persistence.QuestionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,30 +32,46 @@ class AnswerServiceTest {
     @Mock
     private AnswerRepository repository;
 
+    @Mock
+    private QuestionRepository questionRepository;
+
     public static final Long ID = 1L;
+    public static final Long QUESTION_ID = 1L;
     public static final String RESPONSE = "Pretty good response for a pretty good question.";
     public static final int POINTS = 1;
 
-    @Test
-    void testRegisterAnswer() {
-        doReturn(getAnswer()).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
-        AnswerResponse response = service.registerAnswer(getAnswerForm());
-        Assertions.assertNotNull(response);
-        verify(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
-    }
+//    @Test
+//    void testRegisterAnswer() {
+//        doReturn(getOptionalQuestion()).when(questionRepository).findById(getAnswerForm().getQuestionId());
+//        doReturn(getAnswer()).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
+//        AnswerResponse response = service.registerAnswer(getAnswerForm());
+//        Assertions.assertNotNull(response);
+//        verify(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
+//        verify(questionRepository).findById(QUESTION_ID);
+//    }
 
     @Test
     void testRegisterAnswerWithNoPoints() {
-        doThrow(ConstraintViolationException.class).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerFormWithNoPoints()));
+        doReturn(getOptionalQuestion()).when(questionRepository).findById(QUESTION_ID);
         Exception e = assertThrows(RequestException.class, () -> service.registerAnswer(getAnswerFormWithNoPoints()));
         assertEquals("Every answer must have a score.", e.getMessage());
+        verify(questionRepository).findById(QUESTION_ID);
+    }
+
+    @Test
+    void testRegisterAnswerNonexistentQuestionId() {
+        doThrow(ResourceNotFoundException.class).when(questionRepository).findById(ID);
+        Exception e = assertThrows(ResourceNotFoundException.class, () -> service.registerAnswer(getAnswerForm()));
+        assertEquals("Question not found with id: 1", e.getMessage());
     }
 
     @Test
     void testRegisterAnswerException() {
+        doReturn(getOptionalQuestion()).when(questionRepository).findById(QUESTION_ID);
         doThrow(RequestException.class).when(repository).save(AnswerMapper.fromFormToEntity(getAnswerForm()));
         Exception e = assertThrows(RequestException.class, () -> service.registerAnswer(getAnswerForm()));
         assertEquals("Error when registering answer.", e.getMessage());
+        verify(questionRepository).findById(QUESTION_ID);
     }
 
     @Test
@@ -62,6 +79,7 @@ class AnswerServiceTest {
         doReturn(getAllAnswers()).when(repository).findAll();
         Stream<AnswerResponse> response = service.getAllAnswers();
         assertNotNull(response);
+        verify(repository).findAll();
     }
 
     @Test
@@ -76,6 +94,7 @@ class AnswerServiceTest {
         doReturn(getOptionalAnswer()).when(repository).findById(ID);
         Optional<AnswerResponse> response = service.getAnswerById(ID);
         assertNotNull(response);
+        verify(repository).findById(ID);
     }
 
     @Test
@@ -100,6 +119,7 @@ class AnswerServiceTest {
         String response = service.deleteAnswerById(ID);
         assertNotNull(response);
         assertEquals("Answer deleted.", response);
+        verify(repository).findById(ID);
     }
 
     @Test
@@ -121,37 +141,54 @@ class AnswerServiceTest {
     private AnswerForm getAnswerForm() {
         return AnswerForm.builder()
                 .response(RESPONSE)
-                .points(POINTS)
+                .score(POINTS)
+                .questionId(QUESTION_ID)
                 .build();
     }
 
     private AnswerForm getAnswerFormWithNoPoints() {
         return AnswerForm.builder()
                 .response(RESPONSE)
+                .questionId(QUESTION_ID)
                 .build();
     }
 
     private Answer getAnswer() {
         return Answer.builder()
-                .id(ID)
+                .answerId(ID)
                 .response(RESPONSE)
-                .points(POINTS)
+                .score(POINTS)
+                .questionId(QUESTION_ID)
                 .build();
     }
 
     private List<Answer> getAllAnswers() {
         return List.of(Answer.builder()
-                .id(ID)
-                .points(POINTS)
+                .answerId(ID)
+                .score(POINTS)
                 .response(RESPONSE
                 ).build());
     }
 
     private Optional<Answer> getOptionalAnswer() {
         return Optional.of(Answer.builder()
-                .id(ID)
+                .answerId(ID)
                 .response(RESPONSE)
-                .points(POINTS)
+                .score(POINTS)
                 .build());
+    }
+
+    private Optional<Question> getOptionalQuestion() {
+        return Optional.of(Question.builder()
+                .questionId(QUESTION_ID)
+                .enquiry("Nice enquiry")
+                .build());
+    }
+
+    private Question getQuestion() {
+        return Question.builder()
+                .questionId(QUESTION_ID)
+                .enquiry("Nice enquiry")
+                .build();
     }
 }

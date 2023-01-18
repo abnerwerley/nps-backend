@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity(name = "QUESTION")
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long questionId;
 
     @NotBlank
     @Size(min = 5)
