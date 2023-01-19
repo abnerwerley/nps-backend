@@ -7,10 +7,12 @@ public class AnswerMapper {
 
     public static Answer fromFormToEntity(AnswerForm form) {
         return Answer.builder()
-                .points(form.getPoints())
+                .score(form.getScore())
                 .response(form.getResponse())
+                .questionId(form.getQuestionId())
                 .build();
     }
 
-    private AnswerMapper(){}
+    private AnswerMapper() {
+    }
 }

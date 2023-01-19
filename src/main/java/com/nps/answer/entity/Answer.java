@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity(name = "ANSWER")
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +16,12 @@ public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long answerId;
 
     @NotBlank
     private String response;
 
-    private int points;
+    private Integer score;
+
+    private Long questionId;
 }

@@ -42,6 +42,7 @@ public class QuestionService {
         try {
             return repository.findAll().stream().map(QuestionResponseMapper::fromEntityToResponse);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error when getting all questions.");
             throw new RequestException("Error when getting all questions.");
         }

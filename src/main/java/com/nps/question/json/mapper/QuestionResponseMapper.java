@@ -6,7 +6,7 @@ import com.nps.question.json.QuestionResponse;
 public class QuestionResponseMapper {
     public static QuestionResponse fromEntityToResponse(Question question) {
         return QuestionResponse.builder()
-                .id(question.getId())
+                .questionId(question.getQuestionId())
                 .enquiry(question.getEnquiry())
                 .build();
     }

@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AnswerResponse {
-    private Long id;
+    private Long answerId;
     private String response;
-    private int points;
+    private Integer score;
+    private Long questionId;
 }
