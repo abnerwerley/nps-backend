@@ -5,18 +5,19 @@ import com.nps.answer.entity.mapper.AnswerMapper;
 import com.nps.answer.json.AnswerForm;
 import com.nps.answer.json.AnswerResponse;
 import com.nps.answer.json.mapper.AnswerResponseMapper;
+import com.nps.answer.persistence.AnswerCustomRepository;
 import com.nps.answer.persistence.AnswerRepository;
 import com.nps.exception.RequestException;
 import com.nps.exception.ResourceNotFoundException;
 import com.nps.question.entity.Question;
 import com.nps.question.persistence.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,6 +28,9 @@ public class AnswerService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerCustomRepository customRepository;
 
     public static final String ANSWER_DOES_NOT_EXIST = "Answer does not exist.";
 
@@ -54,12 +58,15 @@ public class AnswerService {
         }
     }
 
-    public Stream<AnswerResponse> getAllAnswers() {
+    public List<AnswerResponse> filterAnswer(Long id, String response, Integer score, Long questionId) {
         try {
-            return repository.findAll().stream().map(AnswerResponseMapper::fromEntityToResponse);
+            return customRepository.findAnswer(id, response, score, questionId)
+                    .stream()
+                    .map(AnswerResponseMapper::fromEntityToResponse)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error when getting all answers.");
-            throw new RequestException("Error when getting all answers.");
+            log.info(e.getMessage());
+            throw new RequestException("Error when getting answers.");
         }
     }
 

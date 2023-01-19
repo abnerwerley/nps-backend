@@ -21,7 +21,7 @@ public class Answer {
     @NotBlank
     private String response;
 
-    private int score;
+    private Integer score;
 
     private Long questionId;
 }

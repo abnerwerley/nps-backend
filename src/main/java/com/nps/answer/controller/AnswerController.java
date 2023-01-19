@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/answer")
@@ -28,8 +28,11 @@ public class AnswerController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    Stream<AnswerResponse> getAllAnswers() {
-        return service.getAllAnswers();
+    List<AnswerResponse> filterAnswer(@RequestParam(value = "answerId", required = false) Long answerId,
+                                      @RequestParam(value = "response", required = false) String response,
+                                      @RequestParam(value = "score", required = false) Integer score,
+                                      @RequestParam(value = "questionId", required = false) Long questionId) {
+        return service.filterAnswer(answerId, response, score, questionId);
     }
 
     @GetMapping("/{id}")

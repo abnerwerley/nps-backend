@@ -14,7 +14,7 @@ public class AnswerForm {
     private String response;
 
     @NotNull
-    private int score;
+    private Integer score;
 
     private Long questionId;
 }

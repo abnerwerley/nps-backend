@@ -8,6 +8,6 @@ import lombok.Getter;
 public class AnswerResponse {
     private Long answerId;
     private String response;
-    private int score;
+    private Integer score;
     private Long questionId;
 }
