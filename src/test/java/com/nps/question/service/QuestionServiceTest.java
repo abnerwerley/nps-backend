@@ -7,6 +7,7 @@ import com.nps.question.entity.mapper.QuestionMapper;
 import com.nps.question.json.QuestionForm;
 import com.nps.question.json.QuestionResponse;
 import com.nps.question.json.QuestionUpdateForm;
+import com.nps.question.persistence.QuestionCustomRepository;
 import com.nps.question.persistence.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,6 +29,9 @@ class QuestionServiceTest {
 
     @Mock
     private QuestionRepository repository;
+
+    @Mock
+    private QuestionCustomRepository customRepository;
 
     public static final Long ID = 1L;
 
@@ -53,16 +56,16 @@ class QuestionServiceTest {
 
     @Test
     void testGetAllQuestions() {
-        doReturn(getQuestionsList()).when(repository).findAll();
-        Stream<QuestionResponse> questions = service.getAllQuestions();
+        doReturn(getQuestionsList()).when(customRepository).findQuestions(ID, ENQUIRY);
+        List<QuestionResponse> questions = service.getAllQuestions(ID, ENQUIRY);
         assertNotNull(questions);
-        verify(repository).findAll();
+        verify(customRepository).findQuestions(ID, ENQUIRY);
     }
 
     @Test
     void testGetAllQuestionsException() {
-        doThrow(RequestException.class).when(repository).findAll();
-        Exception exception = assertThrows(RequestException.class, () -> service.getAllQuestions());
+        doThrow(RequestException.class).when(customRepository).findQuestions(null, null);
+        Exception exception = assertThrows(RequestException.class, () -> service.getAllQuestions(null, null));
         assertEquals("Error when getting all questions.", exception.getMessage());
     }
 

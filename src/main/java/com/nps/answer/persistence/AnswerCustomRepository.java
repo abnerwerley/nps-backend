@@ -27,7 +27,7 @@ public class AnswerCustomRepository {
         }
 
         if (response != null) {
-            query += condition + " a.response = :response";
+            query += condition + " a.response like concat('%', :response, '%')";
             condition = AND;
         }
 
