@@ -18,7 +18,6 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
 
-    @NotBlank
     private String response;
 
     private Integer score;
