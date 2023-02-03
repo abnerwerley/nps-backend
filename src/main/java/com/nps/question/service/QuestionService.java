@@ -8,14 +8,16 @@ import com.nps.question.json.QuestionForm;
 import com.nps.question.json.QuestionResponse;
 import com.nps.question.json.QuestionUpdateForm;
 import com.nps.question.json.mapper.QuestionResponseMapper;
+import com.nps.question.persistence.QuestionCustomRepository;
 import com.nps.question.persistence.QuestionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +26,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository repository;
+
+    @Autowired
+    private QuestionCustomRepository customRepository;
 
     public static final String QUESTION_DOES_NOT_EXIST = "Question does not exist.";
 
@@ -38,11 +43,13 @@ public class QuestionService {
 
     }
 
-    public Stream<QuestionResponse> getAllQuestions() {
+    public List<QuestionResponse> getAllQuestions(Long questionId, String enquiry) {
         try {
-            return repository.findAll().stream().map(QuestionResponseMapper::fromEntityToResponse);
+            return customRepository.findQuestions(questionId, enquiry)
+                    .stream()
+                    .map(QuestionResponseMapper::fromEntityToResponse)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Error when getting all questions.");
             throw new RequestException("Error when getting all questions.");
         }

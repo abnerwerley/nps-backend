@@ -22,5 +22,6 @@ public class Answer {
 
     private Integer score;
 
+
     private Long questionId;
 }
