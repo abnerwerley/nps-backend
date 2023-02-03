@@ -4,7 +4,7 @@ import com.nps.answer.json.AnswerForm;
 import com.nps.exception.RequestException;
 import com.nps.question.entity.Question;
 import com.nps.question.persistence.QuestionCustomRepository;
-import com.nps.question.utils.ValidateFirstAnswer;
+import com.nps.answer.utils.ValidateFirstAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
