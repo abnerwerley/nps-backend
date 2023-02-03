@@ -7,12 +7,11 @@ import com.nps.answer.json.AnswerResponse;
 import com.nps.answer.json.mapper.AnswerResponseMapper;
 import com.nps.answer.persistence.AnswerCustomRepository;
 import com.nps.answer.persistence.AnswerRepository;
+import com.nps.answer.utils.ValidateFirstAnswer;
 import com.nps.exception.RequestException;
 import com.nps.exception.ResourceNotFoundException;
 import com.nps.question.entity.Question;
 import com.nps.question.persistence.QuestionRepository;
-import com.nps.question.utils.ValidateFirstAnswer;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class AnswerService {
 
     @Autowired
@@ -34,7 +32,6 @@ public class AnswerService {
     @Autowired
     private AnswerCustomRepository customRepository;
 
-    @Autowired
     private ValidateFirstAnswer validate;
 
     public static final String ANSWER_DOES_NOT_EXIST = "Answer does not exist.";

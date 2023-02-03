@@ -10,7 +10,7 @@ import com.nps.exception.RequestException;
 import com.nps.exception.ResourceNotFoundException;
 import com.nps.question.entity.Question;
 import com.nps.question.persistence.QuestionRepository;
-import com.nps.question.utils.ValidateFirstAnswer;
+import com.nps.answer.utils.ValidateFirstAnswer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
