@@ -50,7 +50,6 @@ public class QuestionService {
                     .map(QuestionResponseMapper::fromEntityToResponse)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Error when getting all questions.");
             throw new RequestException("Error when getting all questions.");
         }
