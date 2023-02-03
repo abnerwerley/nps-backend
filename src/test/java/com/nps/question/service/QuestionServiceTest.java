@@ -34,23 +34,22 @@ class QuestionServiceTest {
     private QuestionCustomRepository customRepository;
 
     public static final Long ID = 1L;
-
     public static final String ENQUIRY = "Pretend this is a very good question, ok?";
-
     public static final String ENQUIRY_TO_BE_UPDATED = "Pretend this question is better than the previous one.";
 
-//    @Test
-//    void testRegisterQuestion() {
-//        doReturn(getQuestion()).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionForm()));
-//        QuestionResponse registering = service.registerQuestion(getQuestionForm());
-//        assertNotNull(registering);
-//        verify(repository).save(QuestionMapper.fromFormToEntity(getQuestionForm()));
-//    }
+    @Test
+    void testRegisterQuestion() {
+        QuestionForm form = new QuestionForm(ENQUIRY);
+        QuestionResponse response = service.registerQuestion(form);
+        assertNotNull(response);
+        assertEquals(ENQUIRY, response.getEnquiry());
+    }
 
     @Test
     void testRegisterQuestionException() {
-        doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionForm()));
-        Exception exception = assertThrows(RequestException.class, () -> service.registerQuestion(getQuestionForm()));
+        QuestionForm form = new QuestionForm(ENQUIRY);
+        doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(form));
+        Exception exception = assertThrows(RequestException.class, () -> service.registerQuestion(form));
         assertEquals("Error when registering a question.", exception.getMessage());
     }
 
@@ -81,29 +80,31 @@ class QuestionServiceTest {
         assertEquals("Question not found with id: 99", ResourceNotFoundException.getMessage());
     }
 
-//    @Test
-//    void testUpdateQuestion() {
-//        doReturn(getQuestionOptional()).when(repository).findById(ID);
-//        doReturn(getQuestionUpdated()).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionUpdateForm()));
-//        QuestionResponse response = service.updateQuestion(getQuestionUpdateForm());
-//        assertNotNull(response);
-//        verify(repository).findById(ID);
-//        verify(repository).save(QuestionMapper.fromFormToEntity(getQuestionUpdateForm()));
-//    }
+    @Test
+    void testUpdateQuestion() {
+        doReturn(getQuestionOptional()).when(repository).findById(getQuestionUpdateForm().getId());
+        QuestionResponse response = service.updateQuestion(getQuestionUpdateForm());
+        assertNotNull(response);
+        assertEquals(ENQUIRY_TO_BE_UPDATED, response.getEnquiry());
+        verify(repository).findById(getQuestionUpdateForm().getId());
+    }
 
     @Test
     void testUpdateQuestionResourceNotFoundException() {
-        doThrow(ResourceNotFoundException.class).when(repository).findById(ID);
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.updateQuestion(getQuestionUpdateForm()));
+        QuestionUpdateForm form = new QuestionUpdateForm(ID, ENQUIRY_TO_BE_UPDATED);
+        doThrow(ResourceNotFoundException.class).when(repository).findById(form.getId());
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> service.updateQuestion(form));
         assertEquals("Question does not exist.", exception.getMessage());
     }
 
     @Test
     void testUpdateQuestionException() {
-        doReturn(getQuestionOptional()).when(repository).findById(ID);
-        doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(getQuestionUpdateFormWithMistake()));
-        Exception exception = assertThrows(RequestException.class, () -> service.updateQuestion(getQuestionUpdateFormWithMistake()));
+        QuestionUpdateForm form = new QuestionUpdateForm(ID, " ");
+        doReturn(getQuestionOptional()).when(repository).findById(form.getId());
+        doThrow(RequestException.class).when(repository).save(QuestionMapper.fromFormToEntity(form));
+        Exception exception = assertThrows(RequestException.class, () -> service.updateQuestion(form));
         assertEquals("Error when updating question.", exception.getMessage());
+        verify(repository).findById(form.getId());
     }
 
     @Test
@@ -111,6 +112,7 @@ class QuestionServiceTest {
         doReturn(getQuestionOptional()).when(repository).findById(ID);
         String response = service.deleteQuestion(ID);
         assertEquals("Question deleted.", response);
+        verify(repository).findById(ID);
     }
 
     @Test
@@ -126,13 +128,7 @@ class QuestionServiceTest {
         doThrow(RequestException.class).when(repository).deleteById(ID);
         Exception exception = assertThrows(RequestException.class, () -> service.deleteQuestion(ID));
         assertEquals("Error when deleting question by id.", exception.getMessage());
-    }
-
-    private Question getQuestion() {
-        return Question.builder()
-                .questionId(ID)
-                .enquiry(ENQUIRY)
-                .build();
+        verify(repository).findById(ID);
     }
 
     private Optional<Question> getQuestionOptional() {
@@ -140,12 +136,6 @@ class QuestionServiceTest {
                 .questionId(ID)
                 .enquiry(ENQUIRY)
                 .build());
-    }
-
-    private QuestionForm getQuestionForm() {
-        return QuestionForm.builder()
-                .enquiry(ENQUIRY)
-                .build();
     }
 
     private List<Question> getQuestionsList() {
@@ -158,20 +148,6 @@ class QuestionServiceTest {
     private QuestionUpdateForm getQuestionUpdateForm() {
         return QuestionUpdateForm.builder()
                 .id(ID)
-                .enquiry(ENQUIRY_TO_BE_UPDATED)
-                .build();
-    }
-
-    private QuestionUpdateForm getQuestionUpdateFormWithMistake() {
-        return QuestionUpdateForm.builder()
-                .id(ID)
-                .enquiry(" ")
-                .build();
-    }
-
-    private Question getQuestionUpdated() {
-        return Question.builder()
-                .questionId(ID)
                 .enquiry(ENQUIRY_TO_BE_UPDATED)
                 .build();
     }
