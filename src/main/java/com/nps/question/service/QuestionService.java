@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,7 +34,8 @@ public class QuestionService {
     public QuestionResponse registerQuestion(QuestionForm form) {
         try {
             Question question = QuestionMapper.fromFormToEntity(form);
-            return QuestionResponseMapper.fromEntityToResponse(repository.save(question));
+            repository.save(question);
+            return QuestionResponseMapper.fromEntityToResponse(question);
         } catch (Exception e) {
             log.error("Error when registering a question.");
             throw new RequestException("Error when registering a question.");
@@ -48,7 +48,7 @@ public class QuestionService {
             return customRepository.findQuestions(questionId, enquiry)
                     .stream()
                     .map(QuestionResponseMapper::fromEntityToResponse)
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (Exception e) {
             log.error("Error when getting all questions.");
             throw new RequestException("Error when getting all questions.");
